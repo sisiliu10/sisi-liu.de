@@ -7,10 +7,11 @@
 <meta name="description" content="Projects, writing and places to find Sisi Liu.">
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#fff;color:#111;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+body{margin:0;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#fff;color:#111;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
 #c{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .t,main{position:relative;z-index:1}
-main{max-width:560px;margin:0 auto;padding:72px 24px 96px}
+main{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:72px 24px 40px}
+.so{margin-bottom:64px}
 h1{font-size:28px;font-weight:600;margin:0 0 6px}
 .i{color:#666;margin:0 0 48px}
 h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:40px 0 12px}
@@ -20,11 +21,11 @@ li span{color:#666}
 a{color:#111;text-decoration-color:#bbb;text-underline-offset:3px}
 a:hover{text-decoration-color:#111}
 .t{display:flex;justify-content:center;gap:48px;padding:24px 20px 0;font:12px/1 Arial,sans-serif;color:#000;font-variant-numeric:tabular-nums}
-footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:64px;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
+footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
 #n{color:#aaa}#x{margin-left:12px}
-@media(max-width:480px){body{font-size:16px}main{padding:28px 20px 24px}h1{font-size:24px}.i{margin-bottom:28px}h2{margin:24px 0 6px}.t{gap:40px;padding-top:20px}.so li{display:inline-block;margin-right:18px}footer{margin-top:32px}}
+@media(max-width:480px){body{font-size:16px}main{padding:28px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:28px}h2{margin:28px 0 6px}.t{gap:40px;padding-top:20px}.so{margin-bottom:32px}}
 html.lock,html.lock body{height:100%;overflow:hidden;overscroll-behavior:none}
 html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 </style>
@@ -33,6 +34,7 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <canvas id="c" aria-hidden="true"></canvas>
 <div class="t"><span id="d"></span><span id="h"></span></div>
 <main>
+<div>
 <h1>Sisi Liu</h1>
 <p class="i">creative technologist<br>munich, düsseldorf, beijing</p>
 <h2>Projects</h2>
@@ -49,6 +51,7 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <li><a href="https://www.linkedin.com/in/sisi-liu-5108b31b6/">linkedin</a></li>
 <li><a href="https://github.com/sisiliu10">github</a></li>
 </ul>
+</div>
 <footer><span>© 2026 Sisi Liu</span><span><span id="n">move to draw · click for colour</span><button id="x" hidden>clear</button></span></footer>
 </main>
 <script>
