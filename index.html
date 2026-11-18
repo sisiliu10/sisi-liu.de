@@ -58,7 +58,7 @@ const p=n=>String(n).padStart(2,'0');
 function t(){const d=new Date();document.getElementById('d').textContent=p(d.getMonth()+1)+'/'+p(d.getDate())+'/'+d.getFullYear();document.getElementById('h').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
 t();setInterval(t,1000);
 (()=>{
-const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#4c9fcf','#e2a644','#d1756a','#8c8c8c'];
+const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#d4675c','#4c9fcf','#6aab7c','#e3c24a','#9a7cc4','#e8914f','#e48fb2','#9c7356'];
 let W,H,S=[],cur=null,ci=0,last=0,tm,tx=0,ty=0,px=0,py=0,on=false,w=1.6,k=.14;
 try{const v=JSON.parse(localStorage.getItem(K));if(v&&Array.isArray(v.s)){S=v.s;ci=v.c||0}}catch(e){}
 function seg(s,i){const q=s.p,a=q[Math.max(i-2,0)],m=q[i-1],n=q[i];g.strokeStyle=s.c;g.lineWidth=n[2];g.beginPath();g.moveTo((a[0]+m[0])/2*W,(a[1]+m[1])/2*H);g.quadraticCurveTo(m[0]*W,m[1]*H,(m[0]+n[0])/2*W,(m[1]+n[1])/2*H);g.stroke()}
@@ -76,8 +76,7 @@ document.documentElement.addEventListener('mouseleave',stop);
 addEventListener('touchstart',e=>{k=.35;cur=null;on=false;const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchend',stop);
-addEventListener('click',e=>{if(e.target.closest('a,button'))return;ci=(ci+1)%C.length;cur=null;save()});
-b.addEventListener('click',()=>{S=[];cur=null;draw();try{localStorage.removeItem(K)}catch(e){}});
+b.addEventListener('click',()=>{S=[];cur=null;ci=0;draw();try{localStorage.removeItem(K)}catch(e){}});
 const R=document.documentElement,T=matchMedia('(hover:none)').matches;
 function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
