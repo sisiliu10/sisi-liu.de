@@ -20,9 +20,10 @@ li span{color:#666}
 a{color:#111;text-decoration-color:#bbb;text-underline-offset:3px}
 a:hover{text-decoration-color:#111}
 .t{display:flex;justify-content:center;gap:48px;padding:24px 20px 0;font:12px/1 Arial,sans-serif;color:#000;font-variant-numeric:tabular-nums}
-footer{display:flex;justify-content:space-between;margin-top:64px;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
+footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:64px;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
+#n{color:#aaa}#x{margin-left:12px}
 @media(max-width:480px){body{font-size:16px}main{padding:48px 20px 72px}h1{font-size:24px}.i{margin-bottom:36px}.t{gap:40px;padding-top:20px}}
 </style>
 </head>
@@ -46,31 +47,35 @@ footer button:hover{color:#111;text-decoration-color:#111}
 <li><a href="https://www.linkedin.com/in/sisi-liu-5108b31b6/">linkedin</a></li>
 <li><a href="https://github.com/sisiliu10">github</a></li>
 </ul>
-<footer><span>© 2026 Sisi Liu</span><button id="x" hidden>clear drawing</button></footer>
+<footer><span>© 2026 Sisi Liu</span><span><span id="n">move to draw · click for colour</span><button id="x" hidden>clear</button></span></footer>
 </main>
 <script>
 const p=n=>String(n).padStart(2,'0');
 function t(){const d=new Date();document.getElementById('d').textContent=p(d.getMonth()+1)+'/'+p(d.getDate())+'/'+d.getFullYear();document.getElementById('h').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
 t();setInterval(t,1000);
 (()=>{
-const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#0033ff','#ffc800','#e3000f','#111'];
-let W,H,S=[],cur=null,ci=0,last=0,tm;
+const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#4c9fcf','#e2a644','#d1756a','#8c8c8c'];
+let W,H,S=[],cur=null,ci=0,last=0,tm,tx=0,ty=0,px=0,py=0,on=false,w=1.6;
 try{const v=JSON.parse(localStorage.getItem(K));if(v&&Array.isArray(v.s)){S=v.s;ci=v.c||0}}catch(e){}
 function seg(s,i){const q=s.p,a=q[Math.max(i-2,0)],m=q[i-1],n=q[i];g.strokeStyle=s.c;g.lineWidth=n[2];g.beginPath();g.moveTo((a[0]+m[0])/2*W,(a[1]+m[1])/2*H);g.quadraticCurveTo(m[0]*W,m[1]*H,(m[0]+n[0])/2*W,(m[1]+n[1])/2*H);g.stroke()}
 function draw(){g.clearRect(0,0,W,H);S.forEach(s=>{for(let i=1;i<s.p.length;i++)seg(s,i)});b.hidden=!S.length}
-function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;g.setTransform(r,0,0,r,0,0);g.lineCap='round';g.lineJoin='round';draw()}
+function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;g.setTransform(r,0,0,r,0,0);g.lineCap='round';g.lineJoin='round';g.globalAlpha=.85;draw()}
 function save(){clearTimeout(tm);tm=setTimeout(()=>{let n=S.reduce((a,s)=>a+s.p.length,0),cut=0;while(n>8000&&S.length>1){n-=S.shift().p.length;cut=1}if(cut)draw();try{localStorage.setItem(K,JSON.stringify({s:S,c:ci}))}catch(e){}},500)}
-function add(X,Y){const now=performance.now();if(!cur||now-last>300){cur={c:C[ci],p:[]};S.push(cur);b.hidden=false}
-const q=cur.p,o=q[q.length-1];let w=2.4;
-if(o){const d=Math.hypot(X-o[0]*W,Y-o[1]*H);if(d<2)return;const v=d/Math.max(now-last,1);w=o[2]*.7+Math.max(1,Math.min(3.4,3.4-v*1.2))*.3}
-q.push([+(X/W).toFixed(4),+(Y/H).toFixed(4),+w.toFixed(2)]);last=now;if(q.length>1)seg(cur,q.length-1);save()}
-addEventListener('pointermove',e=>{if(e.pointerType!=='touch')add(e.clientX,e.clientY)});
-document.documentElement.addEventListener('mouseleave',()=>cur=null);
-addEventListener('touchmove',e=>{const f=e.touches[0];add(f.clientX,f.clientY)},{passive:true});
-addEventListener('touchend',()=>cur=null);
+function aim(X,Y){if(!on||!cur){px=X;py=Y}tx=X;ty=Y;on=true}
+function stop(){on=false;cur=null}
+function tick(){if(on){const nx=px+(tx-px)*.14,ny=py+(ty-py)*.14,d=Math.hypot(nx-px,ny-py);
+if(d>.6){const now=performance.now();if(!cur||now-last>400){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};ci=(ci+1)%C.length;S.push(cur);b.hidden=false}
+w+=(Math.max(.9,Math.min(2,2.1-d*.06))-w)*.15;px=nx;py=ny;cur.p.push([+(px/W).toFixed(4),+(py/H).toFixed(4),+w.toFixed(2)]);last=now;seg(cur,cur.p.length-1);save()}}
+requestAnimationFrame(tick)}
+addEventListener('pointermove',e=>{if(e.pointerType!=='touch')aim(e.clientX,e.clientY)});
+document.documentElement.addEventListener('mouseleave',stop);
+addEventListener('touchstart',e=>{cur=null;on=false;const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
+addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
+addEventListener('touchend',stop);
 addEventListener('click',e=>{if(e.target.closest('a,button'))return;ci=(ci+1)%C.length;cur=null;save()});
 b.addEventListener('click',()=>{S=[];cur=null;draw();try{localStorage.removeItem(K)}catch(e){}});
-addEventListener('resize',size);size();
+if(matchMedia('(hover:none)').matches)document.getElementById('n').textContent='swipe to draw · tap for colour';
+addEventListener('resize',size);size();requestAnimationFrame(tick);
 })();
 </script>
 </body>
