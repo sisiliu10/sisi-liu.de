@@ -61,7 +61,7 @@ function seg(s,i){const q=s.p,a=q[Math.max(i-2,0)],m=q[i-1],n=q[i];g.strokeStyle
 function draw(){g.clearRect(0,0,W,H);S.forEach(s=>{for(let i=1;i<s.p.length;i++)seg(s,i)});b.hidden=!S.length}
 function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;g.setTransform(r,0,0,r,0,0);g.lineCap='round';g.lineJoin='round';g.globalAlpha=.85;draw()}
 function save(){clearTimeout(tm);tm=setTimeout(()=>{let n=S.reduce((a,s)=>a+s.p.length,0),cut=0;while(n>8000&&S.length>1){n-=S.shift().p.length;cut=1}if(cut)draw();try{localStorage.setItem(K,JSON.stringify({s:S,c:ci}))}catch(e){}},500)}
-function aim(X,Y){if(!on||!cur){px=X;py=Y}tx=X;ty=Y;on=true}
+function aim(X,Y){if(!on){px=X;py=Y}tx=X;ty=Y;on=true}
 function stop(){on=false;cur=null}
 function tick(){if(on){const nx=px+(tx-px)*.14,ny=py+(ty-py)*.14,d=Math.hypot(nx-px,ny-py);
 if(d>.6){const now=performance.now();if(!cur||now-last>400){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};ci=(ci+1)%C.length;S.push(cur);b.hidden=false}
