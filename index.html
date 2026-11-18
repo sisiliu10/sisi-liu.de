@@ -24,7 +24,6 @@ a:hover{text-decoration-color:#111}
 footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
-#n{color:#aaa}#x{margin-left:12px}
 @media(max-width:480px){body{font-size:16px}main{padding:28px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:28px}h2{margin:28px 0 6px}.t{gap:40px;padding-top:20px}.so{margin-bottom:32px}}
 html.lock,html.lock body{height:100%;overflow:hidden;overscroll-behavior:none}
 html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -52,7 +51,7 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <li><a href="https://github.com/sisiliu10">github</a></li>
 </ul>
 </div>
-<footer><span>© 2026 Sisi Liu</span><span><span id="n">move to draw · click for colour</span><button id="x" hidden>clear</button></span></footer>
+<footer><span>© 2026 Sisi Liu</span><button id="x" hidden>clear</button></footer>
 </main>
 <script>
 const p=n=>String(n).padStart(2,'0');
@@ -81,7 +80,6 @@ addEventListener('click',e=>{if(e.target.closest('a,button'))return;ci=(ci+1)%C.
 b.addEventListener('click',()=>{S=[];cur=null;draw();try{localStorage.removeItem(K)}catch(e){}});
 const R=document.documentElement,T=matchMedia('(hover:none)').matches;
 function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
-if(T)document.getElementById('n').textContent='draw · tap for colour';
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
 })();
 </script>
