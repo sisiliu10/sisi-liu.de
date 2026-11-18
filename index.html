@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#fff;color:#111;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-body{cursor:crosshair}a,button{cursor:pointer}
+body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.5 2.5 13 11'/%3E%3Cpath d='M11.6 9.6l2.8 2.8-1.9 1.9-2.8-2.8z' fill='%23fff'/%3E%3Cpath d='M9.4 11.8c-2.1.1-3.6 1.6-3.9 3.7-.2 1.5-1.1 3.3-3 5.1 2.6.3 5.3-.3 7-2 1.3-1.3 1.8-2.9 1.4-4.3z' fill='%23fff'/%3E%3C/svg%3E") 3 24,crosshair}html.pen body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.5 2.5 13 11'/%3E%3Cpath d='M11.6 9.6l2.8 2.8-1.9 1.9-2.8-2.8z' fill='%23fff'/%3E%3Cpath d='M9.4 11.8c-2.1.1-3.6 1.6-3.9 3.7-.2 1.5-1.1 3.3-3 5.1 2.6.3 5.3-.3 7-2 1.3-1.3 1.8-2.9 1.4-4.3z' fill='%23111'/%3E%3C/svg%3E") 3 24,crosshair}a,button{cursor:pointer}
 #c{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .t,main{position:relative;z-index:1}
 main{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:72px 24px 40px}
@@ -44,6 +44,7 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <h2>Writing</h2>
 <ul>
 <li><a href="https://sisliu.substack.com/">substack</a></li>
+<li><a href="https://x.com/sisiliu201">x</a></li>
 </ul>
 <h2>Socials</h2>
 <ul class="so">
@@ -76,8 +77,8 @@ else if(rel){on=false;rel=false;cur=null}}
 requestAnimationFrame(tick)}
 const free=e=>!e.target.closest('a,button');
 let mode=0,dx=0,dy=0,lt=0;
-const end=()=>{if(mode){stop();mode=0}};
-addEventListener('mousedown',e=>{if(e.button!==0||!free(e)||Date.now()-lt<1000)return;e.preventDefault();if(mode===2){end();mode=-1;return}k=.18;start(e.clientX,e.clientY);mode=1;dx=e.clientX;dy=e.clientY});
+const end=()=>{if(mode){stop();mode=0}document.documentElement.classList.remove('pen')};
+addEventListener('mousedown',e=>{if(e.button!==0||!free(e)||Date.now()-lt<1000)return;e.preventDefault();if(mode===2){end();mode=-1;return}k=.18;start(e.clientX,e.clientY);mode=1;document.documentElement.classList.add('pen');dx=e.clientX;dy=e.clientY});
 addEventListener('mousemove',e=>{if(mode===2||(mode===1&&(e.buttons&1)))aim(e.clientX,e.clientY)});
 addEventListener('mouseup',()=>{if(mode===-1){mode=0;return}if(mode===1){if(Math.hypot(tx-dx,ty-dy)<5)mode=2;else end()}});
 addEventListener('keydown',e=>{if(e.key==='Escape')end()});
@@ -91,5 +92,6 @@ function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
 })();
 </script>
+<script data-goatcounter="https://sisiliu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
