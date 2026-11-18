@@ -8,6 +8,7 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#fff;color:#111;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+body{cursor:crosshair}a,button{cursor:pointer}
 #c{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .t,main{position:relative;z-index:1}
 main{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:72px 24px 40px}
@@ -59,24 +60,32 @@ function t(){const d=new Date();document.getElementById('d').textContent=p(d.get
 t();setInterval(t,1000);
 (()=>{
 const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#d4675c','#4c9fcf','#6aab7c','#e3c24a','#9a7cc4','#e8914f','#e48fb2','#9c7356'];
-let W,H,S=[],cur=null,ci=0,last=0,tm,tx=0,ty=0,px=0,py=0,on=false,w=1.6,k=.14;
+let W,H,S=[],cur=null,ci=0,tm,tx=0,ty=0,px=0,py=0,on=false,rel=false,w=1.6,k=.18;
 try{const v=JSON.parse(localStorage.getItem(K));if(v&&Array.isArray(v.s)){S=v.s;ci=v.c||0}}catch(e){}
 function seg(s,i){const q=s.p,a=q[Math.max(i-2,0)],m=q[i-1],n=q[i];g.strokeStyle=s.c;g.lineWidth=n[2];g.beginPath();g.moveTo((a[0]+m[0])/2*W,(a[1]+m[1])/2*H);g.quadraticCurveTo(m[0]*W,m[1]*H,(m[0]+n[0])/2*W,(m[1]+n[1])/2*H);g.stroke()}
 function draw(){g.clearRect(0,0,W,H);S.forEach(s=>{for(let i=1;i<s.p.length;i++)seg(s,i)});b.hidden=!S.length}
 function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;g.setTransform(r,0,0,r,0,0);g.lineCap='round';g.lineJoin='round';g.globalAlpha=.85;draw()}
 function save(){clearTimeout(tm);tm=setTimeout(()=>{let n=S.reduce((a,s)=>a+s.p.length,0),cut=0;while(n>8000&&S.length>1){n-=S.shift().p.length;cut=1}if(cut)draw();try{localStorage.setItem(K,JSON.stringify({s:S,c:ci}))}catch(e){}},500)}
 function aim(X,Y){if(!on){px=X;py=Y}tx=X;ty=Y;on=true}
-function stop(){on=false;cur=null}
+function start(X,Y){on=false;rel=false;cur=null;aim(X,Y)}
+function stop(){rel=true}
 function tick(){if(on){const nx=px+(tx-px)*k,ny=py+(ty-py)*k,d=Math.hypot(nx-px,ny-py);
-if(d>.6){const now=performance.now();if(!cur||now-last>400){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};ci=(ci+1)%C.length;S.push(cur);b.hidden=false}
-w+=(Math.max(.9,Math.min(2,2.1-d*.06))-w)*.15;px=nx;py=ny;cur.p.push([+(px/W).toFixed(4),+(py/H).toFixed(4),+w.toFixed(2)]);last=now;seg(cur,cur.p.length-1);save()}}
+if(d>.6){if(!cur){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};ci=(ci+1)%C.length;S.push(cur);b.hidden=false}
+w+=(Math.max(.9,Math.min(2,2.1-d*.06))-w)*.15;px=nx;py=ny;cur.p.push([+(px/W).toFixed(4),+(py/H).toFixed(4),+w.toFixed(2)]);seg(cur,cur.p.length-1);save()}
+else if(rel){on=false;rel=false;cur=null}}
 requestAnimationFrame(tick)}
-addEventListener('pointermove',e=>{if(e.pointerType!=='touch'){k=.14;aim(e.clientX,e.clientY)}});
-document.documentElement.addEventListener('mouseleave',stop);
-addEventListener('touchstart',e=>{k=.35;cur=null;on=false;const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
+const free=e=>!e.target.closest('a,button');
+let mode=0,dx=0,dy=0,lt=0;
+const end=()=>{if(mode){stop();mode=0}};
+addEventListener('mousedown',e=>{if(e.button!==0||!free(e)||Date.now()-lt<1000)return;e.preventDefault();if(mode===2){end();mode=-1;return}k=.18;start(e.clientX,e.clientY);mode=1;dx=e.clientX;dy=e.clientY});
+addEventListener('mousemove',e=>{if(mode===2||(mode===1&&(e.buttons&1)))aim(e.clientX,e.clientY)});
+addEventListener('mouseup',()=>{if(mode===-1){mode=0;return}if(mode===1){if(Math.hypot(tx-dx,ty-dy)<5)mode=2;else end()}});
+addEventListener('keydown',e=>{if(e.key==='Escape')end()});
+document.documentElement.addEventListener('mouseleave',end);
+addEventListener('touchstart',e=>{lt=Date.now();mode=0;k=.35;const f=e.touches[0];start(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchend',stop);
-b.addEventListener('click',()=>{S=[];cur=null;ci=0;draw();try{localStorage.removeItem(K)}catch(e){}});
+b.addEventListener('click',()=>{S=[];cur=null;on=false;ci=0;draw();try{localStorage.removeItem(K)}catch(e){}});
 const R=document.documentElement,T=matchMedia('(hover:none)').matches;
 function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
