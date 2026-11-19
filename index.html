@@ -12,7 +12,6 @@ a,button{cursor:pointer}
 #c{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .t,main{position:relative;z-index:1}
 main{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:72px 24px 40px}
-.so{margin-bottom:64px}
 h1{font-size:28px;font-weight:600;margin:0 0 6px}
 .i{color:#666;margin:0 0 48px}
 h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:40px 0 12px}
@@ -22,10 +21,16 @@ li span{color:#666}
 a{color:#111;text-decoration-color:#bbb;text-underline-offset:3px}
 a:hover{text-decoration-color:#111}
 .t{display:flex;justify-content:center;gap:48px;padding:24px 20px 0;font:12px/1 Arial,sans-serif;color:#000;font-variant-numeric:tabular-nums}
+.f{position:relative;margin-bottom:64px}
+.f input{width:100%;border:0;border-bottom:1px solid #ddd;border-radius:0;background:transparent;padding:6px 28px 6px 0;font:inherit;font-size:16px;color:#111;outline:0;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;transition:border-color .2s}
+.f input:focus{border-bottom-color:#111}
+.f input::placeholder{color:#aaa;transition:opacity .3s}
+.f button{position:absolute;right:0;bottom:6px;background:none;border:0;padding:0 2px;font:inherit;color:#111;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+.f.on button{opacity:1;pointer-events:auto}
 footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
-@media(max-width:480px){body{font-size:16px}main{padding:28px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:28px}h2{margin:28px 0 6px}.t{gap:40px;padding-top:20px}.so{margin-bottom:32px}}
+@media(max-width:480px){.f{margin-bottom:20px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:22px}h2{margin:22px 0 4px}.t{gap:40px;padding-top:20px}}
 html.lock,html.lock body{height:100%;overflow:hidden;overscroll-behavior:none}
 html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 </style>
@@ -47,11 +52,13 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <li><a href="https://x.com/sisiliu201">x</a></li>
 </ul>
 <h2>Socials</h2>
-<ul class="so">
+<ul>
 <li><a href="https://www.instagram.com/sisi.i03/">instagram</a></li>
 <li><a href="https://www.linkedin.com/in/sisi-liu-5108b31b6/">linkedin</a></li>
 <li><a href="https://github.com/sisiliu10">github</a></li>
 </ul>
+<h2>Recommend me something</h2>
+<form class="f" id="f" autocomplete="off"><input id="fi" maxlength="120" aria-label="your favorite" placeholder="your favorite book"><button aria-label="send">→</button></form>
 </div>
 <footer><span>© 2026 Sisi Liu</span><button id="x" hidden>clear</button></footer>
 </main>
@@ -75,7 +82,7 @@ if(d>.6){if(!cur){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};
 w+=(Math.max(.9,Math.min(2,2.1-d*.06))-w)*.15;px=nx;py=ny;cur.p.push([+(px/W).toFixed(4),+(py/H).toFixed(4),+w.toFixed(2)]);seg(cur,cur.p.length-1);save()}
 else if(rel){on=false;rel=false;cur=null}}
 requestAnimationFrame(tick)}
-const free=e=>!e.target.closest('a,button');
+const free=e=>!e.target.closest('a,button,input,form');
 let mode=0,dx=0,dy=0,lt=0;
 const end=()=>{if(mode){stop();mode=0}document.documentElement.classList.remove('pen')};
 addEventListener('mousedown',e=>{if(e.button!==0||!free(e)||Date.now()-lt<1000)return;e.preventDefault();if(mode===2){end();mode=-1;return}k=.18;start(e.clientX,e.clientY);mode=1;document.documentElement.classList.add('pen');dx=e.clientX;dy=e.clientY});
@@ -83,13 +90,22 @@ addEventListener('mousemove',e=>{if(mode===2||(mode===1&&(e.buttons&1)))aim(e.cl
 addEventListener('mouseup',()=>{if(mode===-1){mode=0;return}if(mode===1){if(Math.hypot(tx-dx,ty-dy)<5)mode=2;else end()}});
 addEventListener('keydown',e=>{if(e.key==='Escape')end()});
 document.documentElement.addEventListener('mouseleave',end);
-addEventListener('touchstart',e=>{lt=Date.now();mode=0;k=.35;const f=e.touches[0];start(f.clientX,f.clientY)},{passive:true});
+addEventListener('touchstart',e=>{lt=Date.now();if(e.target.closest('form'))return;mode=0;k=.35;const f=e.touches[0];start(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
 addEventListener('touchend',stop);
 b.addEventListener('click',()=>{S=[];cur=null;on=false;ci=0;draw()});
 const R=document.documentElement,T=matchMedia('(hover:none)').matches;
 function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
+})();
+(()=>{
+const f=document.getElementById('f'),i=document.getElementById('fi'),K=['book','podcast','tv show','film','song','album','place','anything'];
+let k=0,cat=K[0],n=0,busy=0;
+setInterval(()=>{if(busy||i.value||document.activeElement===i)return;k=(k+1)%K.length;cat=K[k];i.placeholder='your favorite '+cat},2600);
+i.addEventListener('input',()=>f.classList.toggle('on',!!i.value.trim()));
+f.addEventListener('submit',e=>{e.preventDefault();const v=i.value.trim().replace(/\s+/g,' ');if(!v||n>=5)return;n++;
+try{window.goatcounter&&goatcounter.count({path:'fav/'+cat+': '+v,title:cat+': '+v,event:true})}catch(_){}
+i.value='';f.classList.remove('on');i.blur();busy=1;i.placeholder='thank you ✓';setTimeout(()=>{busy=0;i.placeholder='your favorite '+cat},2600)});
 })();
 </script>
 <script data-goatcounter="https://sisiliu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
