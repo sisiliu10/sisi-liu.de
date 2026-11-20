@@ -25,11 +25,12 @@ a:hover{text-decoration-color:#111}
 .f{display:flex;align-items:baseline;gap:10px;margin:0;flex-wrap:wrap;justify-content:center}
 .f label{white-space:nowrap}
 .f span{position:relative;display:inline-block}
-.f input{width:170px;border:0;border-bottom:1px solid #ccc;border-radius:0;background:transparent;padding:2px 16px 4px 0;font:12px/1 Arial,sans-serif;color:#000;outline:0;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;transition:border-color .2s}
+.f input{width:130px;max-width:60vw;border:0;border-bottom:1px solid #ccc;border-radius:0;background:transparent;padding:2px 0 4px;font:12px/1 Arial,sans-serif;color:#000;outline:0;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;transition:border-color .2s}
 .f input:focus{border-bottom-color:#000}
 .f input::placeholder{color:#999}
 .f button{position:absolute;right:0;top:0;background:none;border:0;padding:2px 0;font:12px/1 Arial,sans-serif;color:#000;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
 .f.on button{opacity:1;pointer-events:auto}
+.f.on input{padding-right:16px}
 footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
@@ -101,10 +102,11 @@ function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
 })();
 (()=>{
-const f=document.getElementById('f'),i=document.getElementById('fi'),K=['book','podcast','tv show','film','song','album','place','anything'];
+const f=document.getElementById('f'),i=document.getElementById('fi'),K=['book','podcast','tv show','sci-fi tv series','film','song','album','magazine','restaurant','place','anything'];
 let k=0,cat=K[0],n=0,busy=0;
 setInterval(()=>{if(busy||i.value||document.activeElement===i)return;k=(k+1)%K.length;cat=K[k];i.placeholder='your favorite '+cat},2600);
-i.addEventListener('input',()=>f.classList.toggle('on',!!i.value.trim()));
+const M=document.createElement('canvas').getContext('2d');M.font='12px Arial,sans-serif';const fitW=()=>{i.style.width=Math.ceil(M.measureText(i.value||i.placeholder).width)+(i.value?18:2)+'px'};fitW();new MutationObserver(fitW).observe(i,{attributes:true,attributeFilter:['placeholder']});
+i.addEventListener('input',()=>{f.classList.toggle('on',!!i.value.trim());fitW()});
 f.addEventListener('submit',e=>{e.preventDefault();const v=i.value.trim().replace(/\s+/g,' ');if(!v||n>=5)return;n++;
 try{window.goatcounter&&goatcounter.count({path:'fav/'+cat+': '+v,title:cat+': '+v,event:true})}catch(_){}
 i.value='';f.classList.remove('on');i.blur();busy=1;i.placeholder='thank you ✓';setTimeout(()=>{busy=0;i.placeholder='your favorite '+cat},2600)});
