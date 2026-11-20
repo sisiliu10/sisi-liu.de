@@ -24,13 +24,13 @@ a:hover{text-decoration-color:#111}
 .r{margin-top:auto;padding:48px 0 18px;display:flex;justify-content:center;font:12px/1 Arial,sans-serif;color:#000}
 .f{display:flex;align-items:baseline;gap:10px;margin:0;flex-wrap:wrap;justify-content:center}
 .f label{white-space:nowrap}
-.f span{position:relative;display:inline-block}
-.f input{width:130px;max-width:60vw;border:0;border-bottom:1px solid #ccc;border-radius:0;background:transparent;padding:2px 0 4px;font:12px/1 Arial,sans-serif;color:#000;outline:0;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;transition:border-color .2s}
+.f .w{position:relative;display:inline-block}
+.f input{width:164px;border:0;border-bottom:1px solid #ccc;border-radius:0;background:transparent;padding:2px 0 4px;font:12px/1 Arial,sans-serif;color:#000;outline:0;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;transition:border-color .4s ease}
 .f input:focus{border-bottom-color:#000}
-.f input::placeholder{color:#999}
-.f button{position:absolute;right:0;top:0;background:none;border:0;padding:2px 0;font:12px/1 Arial,sans-serif;color:#000;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+.f .h{position:absolute;left:0;top:2px;font:12px/1 Arial,sans-serif;font-style:normal;color:#999;white-space:nowrap;pointer-events:none;transition:opacity .7s ease}
+.f .h.o,.f.on .h{opacity:0}
+.f button{position:absolute;left:calc(100% + 8px);top:0;background:none;border:0;padding:2px 0 4px;font:12px/1 Arial,sans-serif;color:#000;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .4s ease}
 .f.on button{opacity:1;pointer-events:auto}
-.f.on input{padding-right:16px}
 footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;padding-top:16px;border-top:1px solid #e5e5e5;color:#666;font-size:14px}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
@@ -62,7 +62,7 @@ html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-
 <li><a href="https://github.com/sisiliu10">github</a></li>
 </ul>
 </div>
-<div class="r"><form class="f" id="f" autocomplete="off"><label for="fi">recommend me something</label><span><input id="fi" maxlength="120" placeholder="your favorite book"><button aria-label="send">→</button></span></form></div>
+<div class="r"><form class="f" id="f" autocomplete="off"><label for="fi">recommend me something</label><span class="w"><input id="fi" maxlength="120" aria-label="your favorite"><em class="h" id="fh" aria-hidden="true">your favorite book</em><button aria-label="send">→</button></span></form></div>
 <footer><span>© 2026 Sisi Liu</span><button id="x" hidden>clear</button></footer>
 </main>
 <script>
@@ -102,14 +102,16 @@ function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
 })();
 (()=>{
-const f=document.getElementById('f'),i=document.getElementById('fi'),K=['book','podcast','tv show','sci-fi tv series','film','song','album','magazine','restaurant','place','anything'];
+const f=document.getElementById('f'),i=document.getElementById('fi'),h=document.getElementById('fh'),K=['book','podcast','tv show','sci-fi tv series','film','song','album','magazine','restaurant','place','anything'];
 let k=0,cat=K[0],n=0,busy=0;
-setInterval(()=>{if(busy||i.value||document.activeElement===i)return;k=(k+1)%K.length;cat=K[k];i.placeholder='your favorite '+cat},2600);
-const M=document.createElement('canvas').getContext('2d');M.font='12px Arial,sans-serif';const fitW=()=>{i.style.width=Math.ceil(M.measureText(i.value||i.placeholder).width)+(i.value?18:2)+'px'};fitW();new MutationObserver(fitW).observe(i,{attributes:true,attributeFilter:['placeholder']});
-i.addEventListener('input',()=>{f.classList.toggle('on',!!i.value.trim());fitW()});
+const M=document.createElement('canvas').getContext('2d');M.font='12px Arial,sans-serif';
+i.style.width=Math.ceil(Math.max(...K.map(c=>M.measureText('your favorite '+c).width)))+4+'px';
+const say=(t,cb)=>{h.classList.add('o');setTimeout(()=>{h.textContent=t;cb&&cb();h.classList.remove('o')},700)};
+setInterval(()=>{if(busy||i.value||document.activeElement===i)return;k=(k+1)%K.length;say('your favorite '+K[k],()=>{cat=K[k]})},3400);
+i.addEventListener('input',()=>f.classList.toggle('on',!!i.value.trim()));
 f.addEventListener('submit',e=>{e.preventDefault();const v=i.value.trim().replace(/\s+/g,' ');if(!v||n>=5)return;n++;
 try{window.goatcounter&&goatcounter.count({path:'fav/'+cat+': '+v,title:cat+': '+v,event:true})}catch(_){}
-i.value='';f.classList.remove('on');i.blur();busy=1;i.placeholder='thank you ✓';setTimeout(()=>{busy=0;i.placeholder='your favorite '+cat},2600)});
+i.value='';i.blur();busy=1;h.classList.add('o');f.classList.remove('on');setTimeout(()=>{h.textContent='thank you ✓';h.classList.remove('o')},400);setTimeout(()=>say('your favorite '+cat,()=>{busy=0}),3400)});
 })();
 </script>
 <script data-goatcounter="https://sisiliu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
