@@ -34,10 +34,12 @@ a:hover{text-decoration-color:#111}
 .f .h.o,.f.on .h{opacity:0}
 .f button{position:absolute;left:calc(100% + 8px);top:0;background:none;border:0;padding:2px 0 4px;font:12px/1 Arial,sans-serif;color:#000;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .4s ease}
 .f.on button{opacity:1;pointer-events:auto}
-footer{display:flex;justify-content:flex-end;min-height:22px;padding-top:8px;color:#666;font-size:14px}
+footer{position:absolute;right:24px;bottom:14px;color:#666;font-size:14px;line-height:1}
 footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
 footer button:hover{color:#111;text-decoration-color:#111}
-@media(max-width:480px){.r{padding:18px 0 14px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:24px}h2{margin:24px 0 6px}li{padding:3px 0}.hf{margin-top:20px}.t{gap:40px;padding-top:20px}}
+@media(max-width:480px){.r{padding:18px 0 14px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:24px}h2{margin:24px 0 6px}li{padding:3px 0}.hf{margin-top:20px}.t{gap:40px;padding-top:20px}footer{position:fixed;top:20px;right:20px;bottom:auto;z-index:2;font-size:12px}}
+@media(min-width:481px) and (max-height:880px){main{padding-top:44px}.i{margin-bottom:36px}h2{margin:32px 0 10px}.hf{margin-top:28px}}
+@media(max-width:480px) and (max-height:720px){.t{padding-top:14px}main{padding-top:16px}.i{margin-bottom:16px}h2{margin:16px 0 4px}li{padding:2px 0}.hf{margin-top:14px}.r{padding:16px 0 10px}footer{top:14px}}
 html.lock,html.lock body{height:100%;overflow:hidden;overscroll-behavior:none}
 html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 </style>
@@ -102,7 +104,7 @@ addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},
 addEventListener('touchend',stop);
 b.addEventListener('click',()=>{S=[];cur=null;on=false;ci=0;draw()});
 const R=document.documentElement,T=matchMedia('(hover:none)').matches;
-function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
+function fit(){if(!T||document.activeElement&&document.activeElement.tagName==='INPUT')return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
 addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
 })();
 (()=>{
@@ -113,6 +115,7 @@ i.style.width=Math.ceil(Math.max(...K.map(c=>M.measureText('your favorite '+c).w
 const say=(t,cb)=>{h.classList.add('o');setTimeout(()=>{h.textContent=t;cb&&cb();h.classList.remove('o')},700)};
 setInterval(()=>{if(busy||i.value||document.activeElement===i)return;k=(k+1)%K.length;say('your favorite '+K[k],()=>{cat=K[k]})},3400);
 i.addEventListener('input',()=>f.classList.toggle('on',!!i.value.trim()));
+i.addEventListener('blur',()=>setTimeout(()=>scrollTo(0,0),60));
 f.addEventListener('submit',e=>{e.preventDefault();const v=i.value.trim().replace(/\s+/g,' ');if(!v||n>=5)return;n++;
 try{window.goatcounter&&goatcounter.count({path:'fav/'+cat+': '+v,title:cat+': '+v,event:true})}catch(_){}
 i.value='';i.blur();busy=1;h.classList.add('o');f.classList.remove('on');setTimeout(()=>{h.textContent='thank you ✓';h.classList.remove('o')},400);setTimeout(()=>say('your favorite '+cat,()=>{busy=0}),3400)});
