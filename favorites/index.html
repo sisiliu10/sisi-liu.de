@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Favorites – Sisi Liu</title>
+<meta name="description" content="A small collection of things Sisi Liu loves.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:#fff;color:#111;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+a,button{cursor:pointer}
+#c{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.t,main{position:relative;z-index:1}
+main{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:72px 24px 40px}
+h1{font-size:28px;font-weight:600;margin:0 0 6px}
+.i{color:#666;margin:0 0 48px}
+h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:40px 0 12px}
+ul{list-style:none;padding:0;margin:0}
+li{padding:4px 0}
+li span{color:#666}
+a{color:#111;text-decoration-color:#bbb;text-underline-offset:3px}
+a:hover{text-decoration-color:#111}
+.t{display:flex;justify-content:center;gap:48px;padding:24px 20px 0;font:12px/1 Arial,sans-serif;color:#000;font-variant-numeric:tabular-nums}
+.r{margin-top:auto;padding:48px 0 18px;display:flex;justify-content:center;font:12px/1 Arial,sans-serif;color:#000}
+footer{display:flex;justify-content:flex-end;min-height:22px;padding-top:8px;color:#666;font-size:14px}
+footer button{background:none;border:0;padding:0;font:inherit;color:#666;cursor:pointer;text-decoration:underline;text-decoration-color:#bbb;text-underline-offset:3px}
+footer button:hover{color:#111;text-decoration-color:#111}
+@media(max-width:480px){.r{padding:18px 0 14px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:24px}h2{margin:24px 0 6px}li{padding:3px 0}.t{gap:40px;padding-top:20px}}
+html.lock,html.lock body{height:100%;overflow:hidden;overscroll-behavior:none}
+html.lock body{position:fixed;inset:0;width:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.r a{color:#000;text-decoration:none}
+.r a:hover{text-decoration:underline;text-underline-offset:3px}
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<div class="t"><span id="d"></span><span id="h"></span></div>
+<main>
+<div>
+<h1>Favorites</h1>
+<p class="i">things i keep coming back to</p>
+<h2>TV show</h2>
+<ul>
+<li>black mirror</li>
+</ul>
+<h2>Substack</h2>
+<ul>
+<li><a href="https://www.workingtheorys.co">working theorys</a></li>
+</ul>
+</div>
+<div class="r"><a href="/">← sisi liu</a></div>
+<footer><button id="x" hidden>clear</button></footer>
+</main>
+<script>
+const p=n=>String(n).padStart(2,'0');
+function t(){const d=new Date();document.getElementById('d').textContent=p(d.getMonth()+1)+'/'+p(d.getDate())+'/'+d.getFullYear();document.getElementById('h').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
+t();setInterval(t,1000);
+(()=>{
+const c=document.getElementById('c'),g=c.getContext('2d'),b=document.getElementById('x'),K='sisi-draw',C=['#d4675c','#4c9fcf','#6aab7c','#e3c24a','#9a7cc4','#e8914f','#e48fb2','#9c7356'];
+let W,H,S=[],cur=null,ci=0,tm,tx=0,ty=0,px=0,py=0,on=false,rel=false,w=1.6,k=.18;
+try{localStorage.removeItem(K)}catch(e){}
+function seg(s,i){const q=s.p,a=q[Math.max(i-2,0)],m=q[i-1],n=q[i];g.strokeStyle=s.c;g.lineWidth=n[2];g.beginPath();g.moveTo((a[0]+m[0])/2*W,(a[1]+m[1])/2*H);g.quadraticCurveTo(m[0]*W,m[1]*H,(m[0]+n[0])/2*W,(m[1]+n[1])/2*H);g.stroke()}
+function draw(){g.clearRect(0,0,W,H);S.forEach(s=>{for(let i=1;i<s.p.length;i++)seg(s,i)});b.hidden=!S.length}
+function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;g.setTransform(r,0,0,r,0,0);g.lineCap='round';g.lineJoin='round';g.globalAlpha=.85;draw()}
+function save(){clearTimeout(tm);tm=setTimeout(()=>{let n=S.reduce((a,s)=>a+s.p.length,0),cut=0;while(n>8000&&S.length>1){n-=S.shift().p.length;cut=1}if(cut)draw()},500)}
+function aim(X,Y){if(!on){px=X;py=Y}tx=X;ty=Y;on=true}
+function start(X,Y){on=false;rel=false;cur=null;aim(X,Y)}
+function stop(){rel=true}
+function tick(){if(on){const nx=px+(tx-px)*k,ny=py+(ty-py)*k,d=Math.hypot(nx-px,ny-py);
+if(d>.6){if(!cur){cur={c:C[ci],p:[[+(px/W).toFixed(4),+(py/H).toFixed(4),1.2]]};ci=(ci+1)%C.length;S.push(cur);b.hidden=false}
+w+=(Math.max(.9,Math.min(2,2.1-d*.06))-w)*.15;px=nx;py=ny;cur.p.push([+(px/W).toFixed(4),+(py/H).toFixed(4),+w.toFixed(2)]);seg(cur,cur.p.length-1);save()}
+else if(rel){on=false;rel=false;cur=null}}
+requestAnimationFrame(tick)}
+const free=e=>!e.target.closest('a,button,input,form');
+let mode=0,dx=0,dy=0,lt=0;
+const end=()=>{if(mode){stop();mode=0}document.documentElement.classList.remove('pen')};
+addEventListener('mousedown',e=>{if(e.button!==0||!free(e)||Date.now()-lt<1000)return;e.preventDefault();if(mode===2){end();mode=-1;return}k=.18;start(e.clientX,e.clientY);mode=1;document.documentElement.classList.add('pen');dx=e.clientX;dy=e.clientY});
+addEventListener('mousemove',e=>{if(mode===2||(mode===1&&(e.buttons&1)))aim(e.clientX,e.clientY)});
+addEventListener('mouseup',()=>{if(mode===-1){mode=0;return}if(mode===1){if(Math.hypot(tx-dx,ty-dy)<5)mode=2;else end()}});
+addEventListener('keydown',e=>{if(e.key==='Escape')end()});
+document.documentElement.addEventListener('mouseleave',end);
+addEventListener('touchstart',e=>{lt=Date.now();if(e.target.closest('form'))return;mode=0;k=.35;const f=e.touches[0];start(f.clientX,f.clientY)},{passive:true});
+addEventListener('touchmove',e=>{const f=e.touches[0];aim(f.clientX,f.clientY)},{passive:true});
+addEventListener('touchend',stop);
+b.addEventListener('click',()=>{S=[];cur=null;on=false;ci=0;draw()});
+const R=document.documentElement,T=matchMedia('(hover:none)').matches;
+function fit(){if(!T)return;R.classList.remove('lock');const ok=R.scrollHeight<=innerHeight+2;R.classList.toggle('lock',ok);}
+addEventListener('resize',()=>{size();fit()});addEventListener('load',fit);size();fit();requestAnimationFrame(tick);
+})();
+</script>
+<script data-goatcounter="https://sisiliu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
