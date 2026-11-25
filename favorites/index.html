@@ -16,11 +16,12 @@ ul{list-style:none;padding:0;margin:0}
 li{padding:4px 0}
 a{color:#111;text-decoration-color:#bbb;text-underline-offset:3px}
 a:hover{text-decoration-color:#111}
+.hero{display:block;width:min(960px,calc(100vw - 48px));height:auto;aspect-ratio:4096/2286;margin:0 0 8px 50%;transform:translateX(-50%);background:#0b0907;border-radius:2px}
 .t{display:flex;justify-content:center;gap:48px;padding:24px 20px 0;font:12px/1 Arial,sans-serif;color:#000;font-variant-numeric:tabular-nums}
 .r{margin-top:auto;padding:48px 0 48px;display:flex;justify-content:center;font:12px/1 Arial,sans-serif;color:#000}
 .r a{color:#000;text-decoration:none}
 .r a:hover{text-decoration:underline}
-@media(max-width:480px){.r{padding:18px 0 44px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:24px}h2{margin:24px 0 6px}li{padding:3px 0}.t{gap:40px;padding-top:20px}}
+@media(max-width:480px){.r{padding:18px 0 44px}body{font-size:16px}main{padding:22px 20px calc(20px + env(safe-area-inset-bottom))}h1{font-size:24px}.i{margin-bottom:24px}h2{margin:24px 0 6px}li{padding:3px 0}.hero{width:100vw;border-radius:0}.t{gap:40px;padding-top:20px}}
 </style>
 </head>
 <body>
@@ -29,6 +30,7 @@ a:hover{text-decoration-color:#111}
 <div>
 <h1>Favorites</h1>
 <p class="i">things i keep coming back to</p>
+<img class="hero" src="img/galaxy-2048.webp" srcset="img/galaxy-1280.webp 1280w, img/galaxy-2048.webp 2048w, img/galaxy-3072.webp 3072w, img/galaxy-4096.webp 4096w" sizes="(max-width:480px) 100vw, min(960px, calc(100vw - 48px))" width="4096" height="2286" alt="a small figure standing at the edge of a swirling galaxy" decoding="async">
 <h2>TV show</h2>
 <ul>
 <li><a href="https://www.netflix.com/title/70264888">black mirror</a></li>
